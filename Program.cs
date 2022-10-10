@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace ATM
 {
@@ -6,7 +7,8 @@ namespace ATM
     {
         static void Main(string[] args)
         {
-            int AccountNumber;
+            int AccountNumber = 0;
+            bool LogInSuccess = false;
             int LogInAttempts = 0;
             bool Banking = false;
             string[,] UserAndPassword = new string[5, 2] { { "Patrik", "1234" }, { "Anas", "2345" }, { "Theo", "3456" }, { "Leo", "4567" }, { "Lucas", "5678" } };
@@ -14,6 +16,7 @@ namespace ATM
             do
             {
                 Console.Clear();
+                Console.WriteLine("Välkommen till banken");
                 Console.Write("Användarnamn: ");
                 string UserName = Console.ReadLine();
                 Console.Write("pinkod: ");
@@ -23,13 +26,14 @@ namespace ATM
                     if(UserAndPassword[i,0] == UserName && UserAndPassword[i,1] == UserPassword)
                     {
                         Banking = true;
+                        LogInSuccess = true;
                         AccountNumber = i;
                         LogInAttempts = 0;
-                        IsBanking(Banking,Money,UserAndPassword,AccountNumber);
+                        IsBanking(Banking,LogInSuccess,Money,UserAndPassword,AccountNumber);
                     }
                 }
                 LogInAttempts++;
-            } while (LogInAttempts < 3 ^ Banking == true);
+            } while (LogInAttempts < 3 ^ LogInSuccess);
 
         }
 
@@ -38,9 +42,9 @@ namespace ATM
             Console.Clear();
             Console.WriteLine("1. Se dina konton och saldo\n2. Överföring mellan konton\n3. Ta ut pengar\n4. Logga ut");
         }
-        public static void IsBanking(bool Banking, double[,] Cash, string[,] UserAndPassword, int AccountNumber)
+        public static void IsBanking(bool Banking, bool LogInSuccess, double[,] Cash, string[,] UserAndPassword, int AccountNumber)
         {
-            while (Banking)
+            while (Banking && LogInSuccess)
             {
                 PrintMenu();
                 if (Int32.TryParse(Console.ReadLine(), out int MenuChoice))
@@ -48,29 +52,67 @@ namespace ATM
                     switch (MenuChoice)
                     {
                         case 1:
-                            // Se konton och saldo
+                            // Account overview
                             Console.WriteLine("Översikt av konton:");
                             ShowAccountDetails(Cash, AccountNumber);
-                            Console.ReadKey();
+                            EnterForMainMenu();
                             break;
                         case 2:
-                            //Överföring mellan konton
+                            // Transfer money between accounts
+                            double MovingMoney = 0;
                             Console.WriteLine("Överföring mellan konto:");
                             ShowAccountDetails(Cash, AccountNumber);
-                            Console.ReadKey();
+                            Console.Write("För över pengar från konto: ");
+                            if(Int32.TryParse(Console.ReadLine(), out int AccountChoice) && AccountChoice <=2)
+                            {
+                                if(AccountChoice == 1)
+                                {
+                                    Console.Write("Summa att föra över: ");
+                                    MovingMoney = Convert.ToDouble(Console.ReadLine());
+                                    if (MovingMoney <= Cash[AccountNumber, 0])
+                                    {
+                                        Cash[AccountNumber, 0] -= Math.Round(MovingMoney, 2);
+                                        Cash[AccountNumber, 1] += Math.Round(MovingMoney, 2);
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("Du kan inte föra över mer pengar än vad som finns på kontot");
+                                        EnterForMainMenu();
+                                    }
+                                }
+                                else if(AccountChoice == 2)
+                                {
+                                    Console.Write("Summa att föra över: ");
+                                    MovingMoney = Convert.ToDouble(Console.ReadLine());
+                                    if(MovingMoney <= Cash[AccountNumber, 1])
+                                    {
+                                        Cash[AccountNumber, 1] -= Math.Round(MovingMoney, 2);
+                                        Cash[AccountNumber, 0] += Math.Round(MovingMoney, 2);
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("Du kan inte föra över mer pengar än vad som finns på kontot");
+                                        EnterForMainMenu();
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine("Ogiltigt val");
+                                EnterForMainMenu();
+                            }
                             break;
                         case 3:
-                            // Ta ut pengar 
+                            // Money withdrawal
                             ShowAccountDetails(Cash, AccountNumber);
-                            Console.ReadKey();
                             break;
                         case 4:
-                            // Logga ut
+                            // Log out 
+                            LogInSuccess = false;
                             Banking = false;
                             break;
                         default:
                             Console.WriteLine("Menu val är giltigt mellan 1-4");
-                            Console.ReadKey();
                             break;
                     }
                 }
@@ -84,8 +126,13 @@ namespace ATM
 
         private static void ShowAccountDetails(double[,] Cash, int AccountNumber)
         {
-            Console.WriteLine("Privatkonto:  {0} kr", Cash[AccountNumber, 0]);
-            Console.WriteLine("Lönekonto:    {0} kr", Cash[AccountNumber, 1]);
+            Console.WriteLine("1: Privatkonto:  {0} kr", Cash[AccountNumber, 0]);
+            Console.WriteLine("2: Lönekonto:    {0} kr", Cash[AccountNumber, 1]);
+        }
+        private static void EnterForMainMenu()
+        {
+            Console.WriteLine("Tryck ENTER för att komma tillbaka till menu");
+            Console.ReadKey();
         }
     }
 }
