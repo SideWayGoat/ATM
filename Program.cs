@@ -15,10 +15,10 @@ namespace ATM
             do
             {
                 Console.Clear();
-                Console.WriteLine("Välkommen till banken");
-                Console.Write("Användarnamn: ");
+                Console.WriteLine("Welcome to the SUT22 bank");
+                Console.Write("Username: ");
                 string UserName = Console.ReadLine();
-                Console.Write("pinkod: ");
+                Console.Write("Pin Number: ");
                 string UserPassword = Console.ReadLine();
                 for (int i = 0; i < UserAndPassword.Length / 2; i++)
                 {
@@ -39,7 +39,7 @@ namespace ATM
         private static void PrintMenu()
         {
             Console.Clear();
-            Console.WriteLine("1. Se dina konton och saldo\n2. Överföring mellan konton\n3. Ta ut pengar\n4. Logga ut");
+            Console.WriteLine("1. Account Oversight\n2. Internal Transfer\n3. Money Withdrawal\n4. Log out");
         }
         public static void IsBanking(bool Banking, bool LogInSuccess, double[,] Cash, string[,] UserAndPassword, int AccountNumber)
         {
@@ -52,36 +52,38 @@ namespace ATM
                     {
                         case 1:
                             // Account overview
-                            Console.WriteLine("Översikt av konton:");
+                            Console.WriteLine("Account Oversight:");
                             ShowAccountDetails(Cash, AccountNumber);
                             EnterForMainMenu();
                             break;
                         case 2:
                             // Transfer money between accounts
                             double MovingMoney = 0;
-                            Console.WriteLine("Överföring mellan konto:");
+                            Console.WriteLine("Transfer between accounts:");
                             ShowAccountDetails(Cash, AccountNumber);
-                            Console.Write("För över pengar från konto: ");
+                            Console.Write("Transfer money from account: ");
                             if(Int32.TryParse(Console.ReadLine(), out int AccountChoice) && AccountChoice <=2)
                             {
                                 if(AccountChoice == 1)
                                 {
-                                    Console.Write("Summa att föra över: ");
+                                    Console.Write("Amount to transfer: ");
                                     MovingMoney = Convert.ToDouble(Console.ReadLine());
                                     if (MovingMoney <= Cash[AccountNumber, 0])
                                     {
-                                        Cash[AccountNumber, 0] -= Math.Round(MovingMoney, 2);
-                                        Cash[AccountNumber, 1] += Math.Round(MovingMoney, 2);
+                                        Cash[AccountNumber, 0] -= MovingMoney;
+                                        Cash[AccountNumber, 1] += MovingMoney;
+                                        Math.Round(Cash[AccountNumber, 0], 2, MidpointRounding.ToEven);
+                                        Math.Round(Cash[AccountNumber, 1], 2, MidpointRounding.ToEven);
                                     }
                                     else
                                     {
-                                        Console.WriteLine("Du kan inte föra över mer pengar än vad som finns på kontot");
+                                        Console.WriteLine("You can't transfer more money than avaliable on the account");
                                         EnterForMainMenu();
                                     }
                                 }
                                 else if(AccountChoice == 2)
                                 {
-                                    Console.Write("Summa att föra över: ");
+                                    Console.Write("Amount to transfer: ");
                                     MovingMoney = Convert.ToDouble(Console.ReadLine());
                                     if(MovingMoney <= Cash[AccountNumber, 1])
                                     {
@@ -90,67 +92,67 @@ namespace ATM
                                     }
                                     else
                                     {
-                                        Console.WriteLine("Du kan inte föra över mer pengar än vad som finns på kontot");
+                                        Console.WriteLine("You can't transfer more money than avaliable on the account");
                                         EnterForMainMenu();
                                     }
                                 }
                             }
                             else
                             {
-                                Console.WriteLine("Ogiltigt val");
+                                Console.WriteLine("Invalid choice");
                                 EnterForMainMenu();
                             }
                             break;
                         case 3:
                             // Money withdrawal
                             double MoneyWithdrawal;
-                            Console.WriteLine("Ta ut pengar: ");
+                            Console.WriteLine("Withdrawal Money: ");
                             ShowAccountDetails(Cash, AccountNumber);
-                            Console.Write("Välj konto: ");
+                            Console.Write("choose Account: ");
                             double WithdrawalAccount = Convert.ToDouble(Console.ReadLine());
                             if(WithdrawalAccount == 1)
                             {
-                                Console.Write("Välj summa: ");
+                                Console.Write("Amount to withdrawal : ");
                                 MoneyWithdrawal = Convert.ToDouble(Console.ReadLine());
-                                Console.Write("Pinkod:");
+                                Console.Write("Pin Number:");
                                 string Code = Console.ReadLine();
                                 if (MoneyWithdrawal <= Cash[AccountNumber, 0] && Code == UserAndPassword[AccountNumber, 1])
                                 {
                                     Cash[AccountNumber, 0] -= Math.Round(MoneyWithdrawal, 0);
-                                    Console.WriteLine("Uttaget var lyckat");
+                                    Console.WriteLine("Withdrawal successful ");
                                     EnterForMainMenu();
                                 }
                                 else if(MoneyWithdrawal > Cash[AccountNumber, 0])
                                 {
-                                    Console.WriteLine("Du kan inte ta ut mer pengar än vad som finns på kontot");
+                                    Console.WriteLine("You can't withdrawal more money than avaliable on the account ");
                                     EnterForMainMenu();
                                 }
                                 else
                                 {
-                                    Console.WriteLine("Fel pin");
+                                    Console.WriteLine("Wrong Pin Number");
                                     EnterForMainMenu();
                                 }
                             }                            
                             if(WithdrawalAccount == 2)
                             {
-                                Console.Write("Välj summa: ");
+                                Console.Write("Choose Amount ");
                                 MoneyWithdrawal = Convert.ToDouble(Console.ReadLine());
-                                Console.Write("Pinkod:");
+                                Console.Write("Pin Number:");
                                 string Code = Console.ReadLine();
                                 if (MoneyWithdrawal <= Cash[AccountNumber, 1] && Code == UserAndPassword[AccountNumber, 1])
                                 {
                                     Cash[AccountNumber, 1] -= Math.Round(MoneyWithdrawal, 0);
-                                    Console.WriteLine("Uttaget var lyckat");
+                                    Console.WriteLine("Withdrawal successful");
                                     EnterForMainMenu();
                                 }
                                 else if(MoneyWithdrawal > Cash[AccountNumber, 1])
                                 {
-                                    Console.WriteLine("Du kan inte ta ut mer pengar än vad som finns på kontot");
+                                    Console.WriteLine("You can't withdrawal more money than avaliable on the account");
                                     EnterForMainMenu();
                                 }
                                 else
                                 {
-                                    Console.WriteLine("Fel pin");
+                                    Console.WriteLine("Wrong Pin Number");
                                     EnterForMainMenu();
                                 }
                             }
@@ -162,10 +164,10 @@ namespace ATM
                             do
                             {
                                 Console.Clear();
-                                Console.WriteLine("Välkommen till banken");
-                                Console.Write("Användarnamn: ");
+                                Console.WriteLine("Welcome to the SUT22 bank");
+                                Console.Write("Username: ");
                                 string UserName = Console.ReadLine();
-                                Console.Write("pinkod: ");
+                                Console.Write("Pin Number: ");
                                 string UserPassword = Console.ReadLine();
                                 for (int i = 0; i < UserAndPassword.Length / 2; i++)
                                 {
@@ -180,25 +182,25 @@ namespace ATM
                             } while (LogInAttempts < 3 ^ LogInSuccess);
                             break;
                         default:
-                            Console.WriteLine("Menu val är giltigt mellan 1-4");
+                            Console.WriteLine("Menu choices include 1-4");
                             break;
                     }
                 }
                 else
                 {
-                    Console.WriteLine("Ogiltigt val i menu");
+                    Console.WriteLine("Invalid choice ");
                     Console.ReadKey();
                 }
             }
         }
         private static void ShowAccountDetails(double[,] Cash, int AccountNumber)
         {
-            Console.WriteLine("1: Privatkonto:  {0} kr", Cash[AccountNumber, 0]);
-            Console.WriteLine("2: Lönekonto:    {0} kr", Cash[AccountNumber, 1]);
+            Console.WriteLine("1: Private Account:  {0} kr", Cash[AccountNumber, 0]);
+            Console.WriteLine("2: Salary Account:   {0} kr", Cash[AccountNumber, 1]);
         }
         private static void EnterForMainMenu()
         {
-            Console.WriteLine("Tryck ENTER för att komma tillbaka till menu");
+            Console.WriteLine("Press ENTER to retun to main menu");
             Console.ReadKey();
         }
     }
