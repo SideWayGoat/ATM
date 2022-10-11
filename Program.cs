@@ -104,7 +104,57 @@ namespace ATM
                             break;
                         case 3:
                             // Money withdrawal
+                            double MoneyWithdrawal;
+                            Console.WriteLine("Ta ut pengar: ");
                             ShowAccountDetails(Cash, AccountNumber);
+                            Console.Write("Välj konto: ");
+                            double WithdrawalAccount = Convert.ToDouble(Console.ReadLine());
+                            if(WithdrawalAccount == 1)
+                            {
+                                Console.Write("Välj summa: ");
+                                MoneyWithdrawal = Convert.ToDouble(Console.ReadLine());
+                                Console.Write("Pinkod:");
+                                string Code = Console.ReadLine();
+                                if (MoneyWithdrawal <= Cash[AccountNumber, 0] && Code == UserAndPassword[AccountNumber, 1])
+                                {
+                                    Cash[AccountNumber, 0] -= Math.Round(MoneyWithdrawal, 0);
+                                    Console.WriteLine("Uttaget var lyckat");
+                                    EnterForMainMenu();
+                                }
+                                else if(MoneyWithdrawal > Cash[AccountNumber, 0])
+                                {
+                                    Console.WriteLine("Du kan inte ta ut mer pengar än vad som finns på kontot");
+                                    EnterForMainMenu();
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Fel pin");
+                                    EnterForMainMenu();
+                                }
+                            }                            
+                            if(WithdrawalAccount == 2)
+                            {
+                                Console.Write("Välj summa: ");
+                                MoneyWithdrawal = Convert.ToDouble(Console.ReadLine());
+                                Console.Write("Pinkod:");
+                                string Code = Console.ReadLine();
+                                if (MoneyWithdrawal <= Cash[AccountNumber, 1] && Code == UserAndPassword[AccountNumber, 1])
+                                {
+                                    Cash[AccountNumber, 1] -= Math.Round(MoneyWithdrawal, 0);
+                                    Console.WriteLine("Uttaget var lyckat");
+                                    EnterForMainMenu();
+                                }
+                                else if(MoneyWithdrawal > Cash[AccountNumber, 1])
+                                {
+                                    Console.WriteLine("Du kan inte ta ut mer pengar än vad som finns på kontot");
+                                    EnterForMainMenu();
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Fel pin");
+                                    EnterForMainMenu();
+                                }
+                            }
                             break;
                         case 4:
                             // Log out 
