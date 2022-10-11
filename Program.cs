@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 
 namespace ATM
 {
@@ -158,8 +157,27 @@ namespace ATM
                             break;
                         case 4:
                             // Log out 
-                            LogInSuccess = false;
-                            Banking = false;
+                                int LogInAttempts = 0;
+                                LogInSuccess = false;
+                            do
+                            {
+                                Console.Clear();
+                                Console.WriteLine("Välkommen till banken");
+                                Console.Write("Användarnamn: ");
+                                string UserName = Console.ReadLine();
+                                Console.Write("pinkod: ");
+                                string UserPassword = Console.ReadLine();
+                                for (int i = 0; i < UserAndPassword.Length / 2; i++)
+                                {
+                                    if (UserAndPassword[i, 0] == UserName && UserAndPassword[i, 1] == UserPassword)
+                                    {
+                                        LogInSuccess = true;
+                                        AccountNumber = i;
+                                        LogInAttempts = 0;
+                                    }
+                                }
+                                LogInAttempts++;
+                            } while (LogInAttempts < 3 ^ LogInSuccess);
                             break;
                         default:
                             Console.WriteLine("Menu val är giltigt mellan 1-4");
@@ -173,7 +191,6 @@ namespace ATM
                 }
             }
         }
-
         private static void ShowAccountDetails(double[,] Cash, int AccountNumber)
         {
             Console.WriteLine("1: Privatkonto:  {0} kr", Cash[AccountNumber, 0]);
