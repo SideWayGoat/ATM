@@ -11,7 +11,7 @@ namespace ATM
             int LogInAttempts = 0;
             bool Banking = false;
             string[,] UserAndPassword = new string[5, 2] { { "Patrik", "1234" }, { "Anas", "2345" }, { "Theo", "3456" }, { "Leo", "4567" }, { "Lucas", "5678" } };
-            double[,] Money = new double[5, 2] { { 2345.23 , 45562 }, { 2312, 23214 }, { 5313.4, 43144 }, { 4341.23, 45366 }, { 2344.12, 55324 } };
+            decimal[,] Money = new decimal[5, 2] { { 2345.23M , 45562M }, { 2312, 23214M }, { 5313.4M, 43144M }, { 4341.23M, 45366M }, { 2344.12M, 55324M } };
             do
             {
                 Console.Clear();
@@ -41,7 +41,7 @@ namespace ATM
             Console.Clear();
             Console.WriteLine("1. Account Oversight\n2. Internal Transfer\n3. Money Withdrawal\n4. Log out");
         }
-        public static void IsBanking(bool Banking, bool LogInSuccess, double[,] Cash, string[,] UserAndPassword, int AccountNumber)
+        public static void IsBanking(bool Banking, bool LogInSuccess, decimal[,] Cash, string[,] UserAndPassword, int AccountNumber)
         {
             while (Banking && LogInSuccess)
             {
@@ -58,7 +58,7 @@ namespace ATM
                             break;
                         case 2:
                             // Transfer money between accounts
-                            double MovingMoney = 0;
+                            decimal MovingMoney = 0;
                             Console.WriteLine("Transfer between accounts:");
                             ShowAccountDetails(Cash, AccountNumber);
                             Console.Write("Transfer money from account: ");
@@ -67,13 +67,13 @@ namespace ATM
                                 if(AccountChoice == 1)
                                 {
                                     Console.Write("Amount to transfer: ");
-                                    MovingMoney = Convert.ToDouble(Console.ReadLine());
+                                    MovingMoney = Convert.ToDecimal(Console.ReadLine());
                                     if (MovingMoney <= Cash[AccountNumber, 0])
                                     {
                                         Cash[AccountNumber, 0] -= MovingMoney;
                                         Cash[AccountNumber, 1] += MovingMoney;
-                                        Math.Round(Cash[AccountNumber, 0], 2, MidpointRounding.ToEven);
-                                        Math.Round(Cash[AccountNumber, 1], 2, MidpointRounding.ToEven);
+                                        Math.Round(Cash[AccountNumber, 0], 2);
+                                        Math.Round(Cash[AccountNumber, 1], 2);
                                     }
                                     else
                                     {
@@ -84,11 +84,11 @@ namespace ATM
                                 else if(AccountChoice == 2)
                                 {
                                     Console.Write("Amount to transfer: ");
-                                    MovingMoney = Convert.ToDouble(Console.ReadLine());
+                                    MovingMoney = Convert.ToDecimal(Console.ReadLine());
                                     if(MovingMoney <= Cash[AccountNumber, 1])
                                     {
-                                        Cash[AccountNumber, 1] -= Math.Round(MovingMoney, 2);
-                                        Cash[AccountNumber, 0] += Math.Round(MovingMoney, 2);
+                                        Cash[AccountNumber, 1] -= Math.Round(MovingMoney, 2, MidpointRounding.ToEven);
+                                        Cash[AccountNumber, 0] += Math.Round(MovingMoney, 2, MidpointRounding.ToEven);
                                     }
                                     else
                                     {
@@ -105,7 +105,7 @@ namespace ATM
                             break;
                         case 3:
                             // Money withdrawal
-                            double MoneyWithdrawal;
+                            decimal MoneyWithdrawal;
                             Console.WriteLine("Withdrawal Money: ");
                             ShowAccountDetails(Cash, AccountNumber);
                             Console.Write("choose Account: ");
@@ -113,7 +113,7 @@ namespace ATM
                             if(WithdrawalAccount == 1)
                             {
                                 Console.Write("Amount to withdrawal : ");
-                                MoneyWithdrawal = Convert.ToDouble(Console.ReadLine());
+                                MoneyWithdrawal = Convert.ToDecimal(Console.ReadLine());
                                 Console.Write("Pin Number:");
                                 string Code = Console.ReadLine();
                                 if (MoneyWithdrawal <= Cash[AccountNumber, 0] && Code == UserAndPassword[AccountNumber, 1])
@@ -136,7 +136,7 @@ namespace ATM
                             if(WithdrawalAccount == 2)
                             {
                                 Console.Write("Choose Amount ");
-                                MoneyWithdrawal = Convert.ToDouble(Console.ReadLine());
+                                MoneyWithdrawal = Convert.ToDecimal(Console.ReadLine());
                                 Console.Write("Pin Number:");
                                 string Code = Console.ReadLine();
                                 if (MoneyWithdrawal <= Cash[AccountNumber, 1] && Code == UserAndPassword[AccountNumber, 1])
@@ -193,7 +193,7 @@ namespace ATM
                 }
             }
         }
-        private static void ShowAccountDetails(double[,] Cash, int AccountNumber)
+        private static void ShowAccountDetails(decimal[,] Cash, int AccountNumber)
         {
             Console.WriteLine("1: Private Account:  {0} kr", Cash[AccountNumber, 0]);
             Console.WriteLine("2: Salary Account:   {0} kr", Cash[AccountNumber, 1]);
