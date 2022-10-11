@@ -70,10 +70,8 @@ namespace ATM
                                     MovingMoney = Convert.ToDecimal(Console.ReadLine());
                                     if (MovingMoney <= Cash[AccountNumber, 0])
                                     {
-                                        Cash[AccountNumber, 0] -= MovingMoney;
-                                        Cash[AccountNumber, 1] += MovingMoney;
-                                        Math.Round(Cash[AccountNumber, 0], 2);
-                                        Math.Round(Cash[AccountNumber, 1], 2);
+                                        Cash[AccountNumber, 0] -= Math.Round(MovingMoney, 2, MidpointRounding.ToEven);
+                                        Cash[AccountNumber, 1] += Math.Round(MovingMoney, 2, MidpointRounding.ToEven);
                                     }
                                     else
                                     {
@@ -105,57 +103,65 @@ namespace ATM
                             break;
                         case 3:
                             // Money withdrawal
-                            decimal MoneyWithdrawal;
+                            decimal MoneyWithdrawal = 0;
                             Console.WriteLine("Withdrawal Money: ");
                             ShowAccountDetails(Cash, AccountNumber);
                             Console.Write("choose Account: ");
-                            double WithdrawalAccount = Convert.ToDouble(Console.ReadLine());
-                            if(WithdrawalAccount == 1)
+                            if(Int32.TryParse(Console.ReadLine(), out AccountChoice) && AccountChoice <= 2)
                             {
-                                Console.Write("Amount to withdrawal : ");
-                                MoneyWithdrawal = Convert.ToDecimal(Console.ReadLine());
-                                Console.Write("Pin Number:");
-                                string Code = Console.ReadLine();
-                                if (MoneyWithdrawal <= Cash[AccountNumber, 0] && Code == UserAndPassword[AccountNumber, 1])
+                                if (AccountChoice == 1)
                                 {
-                                    Cash[AccountNumber, 0] -= Math.Round(MoneyWithdrawal, 0);
-                                    Console.WriteLine("Withdrawal successful ");
-                                    EnterForMainMenu();
+                                    Console.Write("Amount to withdrawal : ");
+                                    MoneyWithdrawal = Convert.ToDecimal(Console.ReadLine());
+                                    Console.Write("Pin Number:");
+                                    string Code = Console.ReadLine();
+                                    if (MoneyWithdrawal <= Cash[AccountNumber, 0] && Code == UserAndPassword[AccountNumber, 1])
+                                    {
+                                        Cash[AccountNumber, 0] -= Math.Round(MoneyWithdrawal, 0);
+                                        Console.WriteLine("Withdrawal successful ");
+                                        EnterForMainMenu();
+                                    }
+                                    else if (MoneyWithdrawal > Cash[AccountNumber, 0])
+                                    {
+                                        Console.WriteLine("You can't withdrawal more money than avaliable on the account ");
+                                        EnterForMainMenu();
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("Wrong Pin Number");
+                                        EnterForMainMenu();
+                                    }
                                 }
-                                else if(MoneyWithdrawal > Cash[AccountNumber, 0])
+                                if (AccountChoice == 2)
                                 {
-                                    Console.WriteLine("You can't withdrawal more money than avaliable on the account ");
-                                    EnterForMainMenu();
-                                }
-                                else
-                                {
-                                    Console.WriteLine("Wrong Pin Number");
-                                    EnterForMainMenu();
-                                }
-                            }                            
-                            if(WithdrawalAccount == 2)
-                            {
-                                Console.Write("Choose Amount ");
-                                MoneyWithdrawal = Convert.ToDecimal(Console.ReadLine());
-                                Console.Write("Pin Number:");
-                                string Code = Console.ReadLine();
-                                if (MoneyWithdrawal <= Cash[AccountNumber, 1] && Code == UserAndPassword[AccountNumber, 1])
-                                {
-                                    Cash[AccountNumber, 1] -= Math.Round(MoneyWithdrawal, 0);
-                                    Console.WriteLine("Withdrawal successful");
-                                    EnterForMainMenu();
-                                }
-                                else if(MoneyWithdrawal > Cash[AccountNumber, 1])
-                                {
-                                    Console.WriteLine("You can't withdrawal more money than avaliable on the account");
-                                    EnterForMainMenu();
-                                }
-                                else
-                                {
-                                    Console.WriteLine("Wrong Pin Number");
-                                    EnterForMainMenu();
+                                    Console.Write("Choose Amount ");
+                                    MoneyWithdrawal = Convert.ToDecimal(Console.ReadLine());
+                                    Console.Write("Pin Number:");
+                                    string PinNumber = Console.ReadLine();
+                                    if (MoneyWithdrawal <= Cash[AccountNumber, 1] && PinNumber == UserAndPassword[AccountNumber, 1])
+                                    {
+                                        Cash[AccountNumber, 1] -= Math.Round(MoneyWithdrawal, 0);
+                                        Console.WriteLine("Withdrawal successful");
+                                        EnterForMainMenu();
+                                    }
+                                    else if (MoneyWithdrawal > Cash[AccountNumber, 1])
+                                    {
+                                        Console.WriteLine("You can't withdrawal more money than avaliable on the account");
+                                        EnterForMainMenu();
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("Wrong Pin Number");
+                                        EnterForMainMenu();
+                                    }
                                 }
                             }
+                            else
+                            {
+                                Console.WriteLine("The choice you made is invalid");
+                                EnterForMainMenu();
+                            }
+
                             break;
                         case 4:
                             // Log out 
