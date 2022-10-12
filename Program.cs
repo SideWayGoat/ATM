@@ -58,115 +58,20 @@ namespace ATM
                             break;
                         case 2:
                             // Transfer money between accounts
-                            decimal MovingMoney = 0;
-                            Console.WriteLine("Transfer between accounts:");
-                            ShowAccountDetails(Cash, AccountNumber);
-                            Console.Write("Transfer money from account: ");
-                            if(Int32.TryParse(Console.ReadLine(), out int AccountChoice) && AccountChoice <=2)
-                            {
-                                if(AccountChoice == 1)
-                                {
-                                    Console.Write("Amount to transfer: ");
-                                    MovingMoney = Convert.ToDecimal(Console.ReadLine());
-                                    if (MovingMoney <= Cash[AccountNumber, 0])
-                                    {
-                                        Cash[AccountNumber, 0] -= Math.Round(MovingMoney, 2, MidpointRounding.ToEven);
-                                        Cash[AccountNumber, 1] += Math.Round(MovingMoney, 2, MidpointRounding.ToEven);
-                                    }
-                                    else
-                                    {
-                                        Console.WriteLine("You can't transfer more money than avaliable on the account");
-                                        EnterForMainMenu();
-                                    }
-                                }
-                                else if(AccountChoice == 2)
-                                {
-                                    Console.Write("Amount to transfer: ");
-                                    MovingMoney = Convert.ToDecimal(Console.ReadLine());
-                                    if(MovingMoney <= Cash[AccountNumber, 1])
-                                    {
-                                        Cash[AccountNumber, 1] -= Math.Round(MovingMoney, 2, MidpointRounding.ToEven);
-                                        Cash[AccountNumber, 0] += Math.Round(MovingMoney, 2, MidpointRounding.ToEven);
-                                    }
-                                    else
-                                    {
-                                        Console.WriteLine("You can't transfer more money than avaliable on the account");
-                                        EnterForMainMenu();
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                Console.WriteLine("Invalid choice");
-                                EnterForMainMenu();
-                            }
+                            int AccountChoice;
+                            InternalMoneyTransfer(Cash, AccountNumber);
+                            EnterForMainMenu();
                             break;
                         case 3:
                             // Money withdrawal
-                            decimal MoneyWithdrawal = 0;
-                            Console.WriteLine("Withdrawal Money: ");
-                            ShowAccountDetails(Cash, AccountNumber);
-                            Console.Write("choose Account: ");
-                            if(Int32.TryParse(Console.ReadLine(), out AccountChoice) && AccountChoice <= 2)
-                            {
-                                if (AccountChoice == 1)
-                                {
-                                    Console.Write("Amount to withdrawal : ");
-                                    MoneyWithdrawal = Convert.ToDecimal(Console.ReadLine());
-                                    Console.Write("Pin Number:");
-                                    string Code = Console.ReadLine();
-                                    if (MoneyWithdrawal <= Cash[AccountNumber, 0] && Code == UserAndPassword[AccountNumber, 1])
-                                    {
-                                        Cash[AccountNumber, 0] -= Math.Round(MoneyWithdrawal, 0);
-                                        Console.WriteLine("Withdrawal successful ");
-                                        EnterForMainMenu();
-                                    }
-                                    else if (MoneyWithdrawal > Cash[AccountNumber, 0])
-                                    {
-                                        Console.WriteLine("You can't withdrawal more money than avaliable on the account ");
-                                        EnterForMainMenu();
-                                    }
-                                    else
-                                    {
-                                        Console.WriteLine("Wrong Pin Number");
-                                        EnterForMainMenu();
-                                    }
-                                }
-                                if (AccountChoice == 2)
-                                {
-                                    Console.Write("Choose Amount ");
-                                    MoneyWithdrawal = Convert.ToDecimal(Console.ReadLine());
-                                    Console.Write("Pin Number:");
-                                    string PinNumber = Console.ReadLine();
-                                    if (MoneyWithdrawal <= Cash[AccountNumber, 1] && PinNumber == UserAndPassword[AccountNumber, 1])
-                                    {
-                                        Cash[AccountNumber, 1] -= Math.Round(MoneyWithdrawal, 0);
-                                        Console.WriteLine("Withdrawal successful");
-                                        EnterForMainMenu();
-                                    }
-                                    else if (MoneyWithdrawal > Cash[AccountNumber, 1])
-                                    {
-                                        Console.WriteLine("You can't withdrawal more money than avaliable on the account");
-                                        EnterForMainMenu();
-                                    }
-                                    else
-                                    {
-                                        Console.WriteLine("Wrong Pin Number");
-                                        EnterForMainMenu();
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                Console.WriteLine("The choice you made is invalid");
-                                EnterForMainMenu();
-                            }
+                            AccountChoice = WithdrawalOfMoney(Cash, UserAndPassword, AccountNumber);
+                            EnterForMainMenu();
 
                             break;
                         case 4:
                             // Log out 
                                 int LogInAttempts = 0;
-                                LogInSuccess = false;
+                                    LogInSuccess = false;
                             do
                             {
                                 Console.Clear();
@@ -198,6 +103,105 @@ namespace ATM
                     Console.ReadKey();
                 }
             }
+        }
+        private static void InternalMoneyTransfer(decimal[,] Cash, int AccountNumber)
+        {
+            decimal MovingMoney = 0;
+            Console.WriteLine("Transfer between accounts:");
+            ShowAccountDetails(Cash, AccountNumber);
+            Console.Write("Transfer money from account: ");
+            if (Int32.TryParse(Console.ReadLine(), out int AccountChoice) && AccountChoice <= 2)
+            {
+                if (AccountChoice == 1)
+                {
+                    Console.Write("Amount to transfer: ");
+                    MovingMoney = Convert.ToDecimal(Console.ReadLine());
+                    if (MovingMoney <= Cash[AccountNumber, 0])
+                    {
+                        Cash[AccountNumber, 0] -= Math.Round(MovingMoney, 2, MidpointRounding.ToEven);
+                        Cash[AccountNumber, 1] += Math.Round(MovingMoney, 2, MidpointRounding.ToEven);
+                    }
+                    else
+                    {
+                        Console.WriteLine("You can't transfer more money than avaliable on the account");
+                    }
+                }
+                else if (AccountChoice == 2)
+                {
+                    Console.Write("Amount to transfer: ");
+                    MovingMoney = Convert.ToDecimal(Console.ReadLine());
+                    if (MovingMoney <= Cash[AccountNumber, 1])
+                    {
+                        Cash[AccountNumber, 1] -= Math.Round(MovingMoney, 2, MidpointRounding.ToEven);
+                        Cash[AccountNumber, 0] += Math.Round(MovingMoney, 2, MidpointRounding.ToEven);
+                    }
+                    else
+                    {
+                        Console.WriteLine("You can't transfer more money than avaliable on the account");
+                    }
+                }
+            }
+            else
+            {
+                Console.WriteLine("Invalid choice");
+            }
+        }
+        private static int WithdrawalOfMoney(decimal[,] Cash, string[,] UserAndPassword, int AccountNumber)
+        {
+            int AccountChoice;
+            Console.WriteLine("Withdrawal Money: ");
+            ShowAccountDetails(Cash, AccountNumber);
+            decimal MoneyWithdrawal = 0;
+            Console.Write("choose Account: ");
+            if (Int32.TryParse(Console.ReadLine(), out AccountChoice) && AccountChoice <= 2)
+            {
+                if (AccountChoice == 1)
+                {
+                    Console.Write("Amount to withdrawal : ");
+                    MoneyWithdrawal = Convert.ToDecimal(Console.ReadLine());
+                    Console.Write("Pin Number:");
+                    string Code = Console.ReadLine();
+                    if (MoneyWithdrawal <= Cash[AccountNumber, 0] && Code == UserAndPassword[AccountNumber, 1])
+                    {
+                        Cash[AccountNumber, 0] -= Math.Round(MoneyWithdrawal, 0);
+                        Console.WriteLine("Withdrawal successful ");
+                    }
+                    else if (MoneyWithdrawal > Cash[AccountNumber, 0])
+                    {
+                        Console.WriteLine("You can't withdrawal more money than avaliable on the account ");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Wrong Pin Number");
+                    }
+                }
+                if (AccountChoice == 2)
+                {
+                    Console.Write("Choose Amount ");
+                    MoneyWithdrawal = Convert.ToDecimal(Console.ReadLine());
+                    Console.Write("Pin Number:");
+                    string PinNumber = Console.ReadLine();
+                    if (MoneyWithdrawal <= Cash[AccountNumber, 1] && PinNumber == UserAndPassword[AccountNumber, 1])
+                    {
+                        Cash[AccountNumber, 1] -= Math.Round(MoneyWithdrawal, 0);
+                        Console.WriteLine("Withdrawal successful");
+                    }
+                    else if (MoneyWithdrawal > Cash[AccountNumber, 1])
+                    {
+                        Console.WriteLine("You can't withdrawal more money than avaliable on the account");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Wrong Pin Number");
+                    }
+                }
+            }
+            else
+            {
+                Console.WriteLine("The choice you made is invalid");
+            }
+
+            return AccountChoice;
         }
         private static void ShowAccountDetails(decimal[,] Cash, int AccountNumber)
         {
