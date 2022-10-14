@@ -30,12 +30,6 @@ namespace ATM
                         LogInAttempts = 0;
                         IsBanking(Banking,LogInSuccess,Money,UserAndPassword,AccountNumber);
                     }
-                    else
-                    {
-                        Console.WriteLine("Wrong username or pin number");
-                        Console.ReadKey();
-
-                    }
                 }
                 LogInAttempts++;
             } while (LogInAttempts < 3 ^ LogInSuccess);
