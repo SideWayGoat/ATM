@@ -71,6 +71,7 @@ namespace ATM
                         case 3:
                             // Money withdrawal
                             AccountChoice = WithdrawalOfMoney(Cash, UserAndPassword, AccountNumber);
+                            ShowAccountDetails(Cash, AccountNumber);
                             EnterForMainMenu();
 
                             break;
@@ -127,7 +128,7 @@ namespace ATM
                         {
                             Cash[AccountNumber, 0] -= Math.Round(MovingMoney, 2, MidpointRounding.ToEven);
                             Cash[AccountNumber, 1] += Math.Round(MovingMoney, 2, MidpointRounding.ToEven);
-                            Console.WriteLine("Successfully transfered {0} kr", MovingMoney);
+                            Console.WriteLine("Successfully transfered {0:C} ", MovingMoney);
                         }
                         else
                         {
@@ -149,7 +150,7 @@ namespace ATM
                         {
                             Cash[AccountNumber, 1] -= Math.Round(MovingMoney, 2, MidpointRounding.ToEven);
                             Cash[AccountNumber, 0] += Math.Round(MovingMoney, 2, MidpointRounding.ToEven);
-                            Console.WriteLine("Successfully transfered {0} kr", MovingMoney);
+                            Console.WriteLine("Successfully transfered {0:C}", MovingMoney);
                         }
                         else
                         {
@@ -240,8 +241,8 @@ namespace ATM
         }
         private static void ShowAccountDetails(decimal[,] Cash, int AccountNumber)
         {
-            Console.WriteLine("1: Private Account:  {0} kr", Cash[AccountNumber, 0]);
-            Console.WriteLine("2: Salary Account:   {0} kr", Cash[AccountNumber, 1]);
+            Console.WriteLine("1: Private Account:  {0:C} ", Cash[AccountNumber, 0]);
+            Console.WriteLine("2: Salary Account:   {0:C} ", Cash[AccountNumber, 1]);
         }
         private static void EnterForMainMenu()
         {
