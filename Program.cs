@@ -30,6 +30,12 @@ namespace ATM
                         LogInAttempts = 0;
                         IsBanking(Banking,LogInSuccess,Money,UserAndPassword,AccountNumber);
                     }
+                    else
+                    {
+                        Console.WriteLine("Wrong username or pin number");
+                        Console.ReadKey();
+
+                    }
                 }
                 LogInAttempts++;
             } while (LogInAttempts < 3 ^ LogInSuccess);
@@ -115,7 +121,7 @@ namespace ATM
                 if (AccountChoice == 1)
                 {
                     Console.Write("Amount to transfer: ");
-                    if(decimal.TryParse(Console.ReadLine(), out MovingMoney))
+                    if(decimal.TryParse(Console.ReadLine(), out MovingMoney) && MovingMoney > 0)
                     {
                         if (MovingMoney <= Cash[AccountNumber, 0])
                         {
@@ -137,7 +143,7 @@ namespace ATM
                 else if (AccountChoice == 2)
                 {
                     Console.Write("Amount to transfer: ");
-                    if(decimal.TryParse(Console.ReadLine(), out MovingMoney))
+                    if(decimal.TryParse(Console.ReadLine(), out MovingMoney) && MovingMoney > 0)
                     {
                         if (MovingMoney <= Cash[AccountNumber, 1])
                         {
@@ -174,7 +180,7 @@ namespace ATM
                 if (AccountChoice == 1)
                 {
                     Console.Write("Amount to withdrawal : ");
-                    if(decimal.TryParse(Console.ReadLine(), out MoneyWithdrawal))
+                    if(decimal.TryParse(Console.ReadLine(), out MoneyWithdrawal) && MoneyWithdrawal > 0)
                     {
                         Console.Write("Pin Number: ");
                         string Code = Console.ReadLine();
@@ -201,7 +207,7 @@ namespace ATM
                 if (AccountChoice == 2)
                 {
                     Console.Write("Amount to withdrawal : ");
-                    if (decimal.TryParse(Console.ReadLine(), out MoneyWithdrawal))
+                    if (decimal.TryParse(Console.ReadLine(), out MoneyWithdrawal) && MoneyWithdrawal > 0)
                     {
                         Console.Write("Pin Number: ");
                         string PinNumber = Console.ReadLine();
